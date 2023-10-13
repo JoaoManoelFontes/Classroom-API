@@ -61,7 +61,10 @@ def main():
             return
         # Prints the names of the first 10 courses.
         print('Courses:')
-        print(courses[0])
+        for course in courses:
+            print('--------- ' + course['name'] + ' ---------')
+            courseWork = service.courses().courseWork().list(courseId=course['id']).execute()
+            print(courseWork)
 
         if os.path.exists('token.json'):
             os.remove('token.json')
