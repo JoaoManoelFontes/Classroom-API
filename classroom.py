@@ -4,7 +4,7 @@ import os.path
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
@@ -63,8 +63,19 @@ def main():
         print('Courses:')
         for course in courses:
             print('--------- ' + course['name'] + ' ---------')
+            print('------- course infos -------')
+            print(course)
             courseWork = service.courses().courseWork().list(courseId=course['id']).execute()
-            print(courseWork)
+            if 'courseWork' in courseWork:
+                print('------- tasks infos -------')
+                for tasks in courseWork['courseWork']:
+                    print('-------' + tasks['title'] + ' -------')
+                    print('------- student submissions -------')
+                    studentSubmission = service.courses().courseWork().studentSubmissions().list(courseId=course['id'], courseWorkId=tasks['id']).execute()
+                    print(studentSubmission)
+                    print('-------------------------')
+            else:
+                print('No tasks found.')
 
         if os.path.exists('token.json'):
             os.remove('token.json')
