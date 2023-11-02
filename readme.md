@@ -21,7 +21,7 @@ $ pip install -r requirements.txt
 $ python classroom.py
 ```
 
-This script will return a link to the google classroom authentication.
+This script will return a link to google classroom authentication.
 
 ## Features
 
