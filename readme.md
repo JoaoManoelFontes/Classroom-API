@@ -8,7 +8,7 @@ Simple API for classroom management.
 
 ```bash
 $ git clone
-$ cd classroom-api
+$ cd project-classroom-api
 $ python3 -m venv venv
 $ source venv/bin/activate # Linux
 $ venv\Scripts\activate # Windows
@@ -17,9 +17,13 @@ $ pip install -r requirements.txt
 
 ## Usage
 
+* Run the script
+
 ```bash
 $ python classroom.py
 ```
+
+* If you have a personal credentials.json file, you can use it by overriding the default one
 
 This script will return a link to google classroom authentication.
 

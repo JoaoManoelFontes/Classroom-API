@@ -4,7 +4,7 @@ import os.path
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from flow import InstalledAppFlow
+import flow as Flow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
@@ -34,7 +34,7 @@ def main():
             # 'credentials.json', SCOPES)
             # creds = flow.run_local_server(port=0)
 
-            flow = InstalledAppFlow.from_client_secrets_file(
+            flow = Flow.InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', SCOPES)
             dic = flow.run_local_server(port=0)
             print(dic['url'])
@@ -61,17 +61,17 @@ def main():
             return
         # Prints the names of the first 10 courses.
         print('Courses:')
-        for course in courses:
-            print('--------- ' + course['name'] + ' ---------')
+        for i in range(2):
+            print('--------- ' + courses[i]['name'] + ' ---------')
             print('------- course infos -------')
-            print(course)
-            courseWork = service.courses().courseWork().list(courseId=course['id']).execute()
+            print(courses[i])
+            courseWork = service.courses().courseWork().list(courseId=courses[i]['id']).execute()
             if 'courseWork' in courseWork:
                 print('------- tasks infos -------')
                 for tasks in courseWork['courseWork']:
                     print('-------' + tasks['title'] + ' -------')
                     print('------- student submissions -------')
-                    studentSubmission = service.courses().courseWork().studentSubmissions().list(courseId=course['id'], courseWorkId=tasks['id']).execute()
+                    studentSubmission = service.courses().courseWork().studentSubmissions().list(courseId=courses[i]['id'], courseWorkId=tasks['id']).execute()
                     print(studentSubmission)
                     print('-------------------------')
             else:
@@ -85,8 +85,8 @@ def main():
         print('An error occurred: %s' % error)
 
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
 
 # # api classroom
 # # https://googleapis.github.io/google-api-python-client/docs/dyn/classroom_v1.html
