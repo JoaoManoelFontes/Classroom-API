@@ -116,13 +116,18 @@ class InstalledAppFlow(Flow):
             "http://{}:{}/" if redirect_uri_trailing_slash else "http://{}:{}"
         )
         self.redirect_uri = redirect_uri_format.format(host, local_server.server_port)
-        return {"url": self.authorization_url(), "wsgi": wsgi_app, "server": local_server}
+        return {
+            "url": self.authorization_url(),
+            "wsgi": wsgi_app,
+            "server": local_server,
+        }
 
         # if open_browser:
         #     webbrowser.open(auth_url, new=1, autoraise=True)
 
         # if authorization_prompt_message:
         #     print(authorization_prompt_message.format(url=auth_url))
+
     # def auth_test():
     #     self.local_server.timeout = timeout_seconds
     #     self.local_server.handle_request()

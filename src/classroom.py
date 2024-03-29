@@ -10,8 +10,8 @@ from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
-    'https://www.googleapis.com/auth/classroom.student-submissions.me.readonly',
-    'https://www.googleapis.com/auth/classroom.courses.readonly',
+    "https://www.googleapis.com/auth/classroom.student-submissions.me.readonly",
+    "https://www.googleapis.com/auth/classroom.courses.readonly",
 ]
 
 
@@ -23,8 +23,8 @@ def main():
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if os.path.exists("src/token.json"):
+        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -35,18 +35,21 @@ def main():
             # creds = flow.run_local_server(port=0)
 
             flow = Flow.InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                "src/credentials.json", SCOPES
+            )
             dic = flow.run_local_server(port=0)
-            print(dic['url'])
-            dic['server'].timeout = None
-            dic['server'].handle_request()
-            authorization_response = dic['wsgi'].last_request_uri.replace("http", "https")
+            print(dic["url"])
+            dic["server"].timeout = None
+            dic["server"].handle_request()
+            authorization_response = dic["wsgi"].last_request_uri.replace(
+                "http", "https"
+            )
             flow.fetch_token(authorization_response=authorization_response)
-            dic['server'].server_close()
+            dic["server"].server_close()
             creds = flow.credentials
 
     try:
-        service = build('classroom', 'v1', credentials=creds)
+        service = build("classroom", "v1", credentials=creds)
 
         # Call the Classroom API
         results = service.courses().list(pageSize=15).execute()
@@ -54,39 +57,47 @@ def main():
         # print(test['courseWork'][0])
         # test = service.courses().list(courseId='600044699098').execute()
         # print(test)
-        courses = results.get('courses', [])
+        courses = results.get("courses", [])
 
         if not courses:
-            print('No courses found.')
+            print("No courses found.")
             return
         # Prints the names of the first 10 courses.
-        print('Courses:')
+        print("Courses:")
         for i in range(2):
-            print('--------- ' + courses[i]['name'] + ' ---------')
-            print('------- course infos -------')
+            print("--------- " + courses[i]["name"] + " ---------")
+            print("------- course infos -------")
             print(courses[i])
-            courseWork = service.courses().courseWork().list(courseId=courses[i]['id']).execute()
-            if 'courseWork' in courseWork:
-                print('------- tasks infos -------')
-                for tasks in courseWork['courseWork']:
-                    print('-------' + tasks['title'] + ' -------')
-                    print('------- student submissions -------')
-                    studentSubmission = service.courses().courseWork().studentSubmissions().list(courseId=courses[i]['id'], courseWorkId=tasks['id']).execute()
+            courseWork = (
+                service.courses().courseWork().list(courseId=courses[i]["id"]).execute()
+            )
+            if "courseWork" in courseWork:
+                print("------- tasks infos -------")
+                for tasks in courseWork["courseWork"]:
+                    print("-------" + tasks["title"] + " -------")
+                    print("------- student submissions -------")
+                    studentSubmission = (
+                        service.courses()
+                        .courseWork()
+                        .studentSubmissions()
+                        .list(courseId=courses[i]["id"], courseWorkId=tasks["id"])
+                        .execute()
+                    )
                     print(studentSubmission)
-                    print('-------------------------')
+                    print("-------------------------")
             else:
-                print('No tasks found.')
+                print("No tasks found.")
 
-        if os.path.exists('token.json'):
-            os.remove('token.json')
-            print('token.json removed')
+        if os.path.exists("src/token.json"):
+            os.remove("src/token.json")
+            print("token.json removed")
 
     except HttpError as error:
-        print('An error occurred: %s' % error)
+        print("An error occurred: %s" % error)
 
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == "__main__":
+    main()
 
 # # api classroom
 # # https://googleapis.github.io/google-api-python-client/docs/dyn/classroom_v1.html
